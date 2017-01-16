@@ -26,19 +26,33 @@ tzname = None
 
 class struct_time(object):
 
-    def __init__(self, tm_year, tm_mon, tm_day, tm_hour, tm_min, tm_sec, tm_wday, tm_yday, tm_isdst):
-        self.tm_year = tm_year
-        self.tm_mon = tm_mon
-        self.tm_day = tm_day
-        self.tm_hour = tm_hour
-        self.tm_min = tm_min
-        self.tm_sec = tm_sec
-        self.tm_wday = tm_wday
-        self.tm_yday = tm_yday
-        self.tm_isdst = tm_isdst
-
+    def __init__(self, seq):
+        if len(seq) != 9:
+            raise TypeError('{}.{}() takes a 9-sequence ({}-sequence given)'
+                            ''.format(self.__class__.__module__,
+                                      self.__class__.__name__, len(seq)))
+        if isinstance(seq, Mapping):
+            self.__dict__.update(seq)
+        elif isinstance(seq, Iterable):
+            (tm_year, tm_mon, tm_day, tm_hour, tm_min,
+             tm_sec, tm_wday, tm_yday, tm_isdst) = map(int, seq)
+            self.tm_year = tm_year
+            self.tm_mon = tm_mon
+            self.tm_day = tm_day
+            self.tm_hour = tm_hour
+            self.tm_min = tm_min
+            self.tm_sec = tm_sec
+            self.tm_wday = tm_wday
+            self.tm_yday = tm_yday
+            self.tm_isdst = tm_isdst
+        else:
+             raise TypeError('constructor requires a sequence')
+        
     def __str__(self):
-        s = '{}{}(tm_year={}, tm_mon={}, tm_mday={}, tm_hour={},'
+        s = ('{}(tm_year={tm_year}, tm_mon={tm_mon}, tm_mday={tm_day}, '
+             'tm_hour={tm_hour}, tm_min={tm_min}, tm_sec={tm_sec}, '
+             'tm_wday={tm_wday}, tm_yday={tm_yday}, tm_isdst={tm_isdst})'
+             ''.format(self.__class__.__name__, **self.__dict__))
         return s
 
 
